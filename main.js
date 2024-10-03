@@ -18,9 +18,11 @@ const createWindow = () => {
 };
 
 // Handle the command execution
-ipcMain.handle('execute-command', async (event, command) => {
+ipcMain.handle('execute-command', async (event, command, outputFolder) => {
     return new Promise((resolve, reject) => {
-        exec(`cdli ${command}`, (error, stdout, stderr) => {
+        // Construct the full command
+        const fullCommand = `cdli ${command}`;
+        exec(fullCommand, { cwd: outputFolder }, (error, stdout, stderr) => {
             if (error) {
                 reject(`Error: ${stderr || error.message}`);
             } else {
@@ -54,4 +56,3 @@ app.on('window-all-closed', () => {
         app.quit();
     }
 });
-
