@@ -1,8 +1,8 @@
-const information = document.getElementById('info')
-information.innerText = `This app is using Chrome (v${versions.chrome()}), Node.js (v${versions.node()}), and Electron (v${versions.electron()})`
-const func = async () => {
-    const response = await window.versions.ping()
-    console.log(response) // prints out 'pong'
-  }
-  
-  func()
+document.getElementById('runButton').addEventListener('click', async () => {
+  const command = document.getElementById('commandInput').value;
+  const outputElement = document.getElementById('output');
+
+  // Use the exposed API to execute the command
+  const result = await window.api.executeCommand(command);
+  outputElement.textContent = result;
+});
