@@ -1,7 +1,8 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('node:path');
 const { exec } = require('child_process');
 
+// Function to create the main window
 const createWindow = () => {
     const win = new BrowserWindow({
         width: 800,
@@ -29,6 +30,15 @@ ipcMain.handle('execute-command', async (event, command) => {
     });
 });
 
+// Handle folder selection
+ipcMain.handle('select-output-folder', async () => {
+    const result = await dialog.showOpenDialog({
+        properties: ['openDirectory'] // Allow folder selection
+    });
+    return result.filePaths[0]; // Return the selected folder path
+});
+
+// App event listeners
 app.whenReady().then(() => {
     createWindow();
 
@@ -44,3 +54,4 @@ app.on('window-all-closed', () => {
         app.quit();
     }
 });
+

@@ -7,16 +7,89 @@
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; }
         input { width: 100%; padding: 10px; margin-bottom: 10px; }
-        button { padding: 10px; margin-right: 10px; } /* Added margin for spacing */
+        button { padding: 10px; margin-right: 10px; }
         pre { background: #f4f4f4; padding: 10px; }
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #creditsButton {
+            font-size: 12px; /* Smaller text for the credits button */
+            padding: 5px; /* Smaller padding */
+            position: absolute; /* Position it at the bottom left */
+            bottom: 20px;
+            left: 20px;
+        }
     </style>
 </head>
 <body>
     <h1>CDLI API Client</h1>
     <input id="commandInput" type="text" placeholder="Enter command" />
     <button id="runButton">Run</button>
-    <button id="clearButton">Clear</button> <!-- Clear button added -->
+    <button id="clearButton">Clear</button>
+    <button id="helpButton">?</button> 
+    <button id="creditsButton">Credits</button>
+    <button id="selectFolderButton">Select Output Folder</button>
     <pre id="output"></pre>
+
+    <!-- Help Modal Structure -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Help</h2>
+            <p>Use the CDLI API Client by entering commands in the input box.</p>
+            <h3>Commands:</h3>
+            <ul>
+                <li><strong>export</strong>: Export catalog and text data</li>
+                <li><strong>search</strong>: Search the catalog</li>
+            </ul>
+            <h3>Options:</h3>
+            <ul>
+                <li><strong>--host</strong>: Specify the host URL</li>
+                <li><strong>--format</strong>: Specify the output format (ndjson, csv, etc.)</li>
+                <li><strong>--output-file</strong>: Specify an output file</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Credits Modal Structure -->
+    <div id="creditsModal" class="modal">
+        <div class="modal-content" style="font-size: 14px;">
+            <span class="close">&times;</span>
+            <h2>Credits</h2>
+            <p>This application was developed by Ilī-Yahu, with the assistance of ChatGPT-4 mini, a large language model providing ample code snippets and corrections.</p>
+            <p>Original developer of the CDLI framework: Lars Willighagen.</p>
+        </div>
+    </div>
+
     <script src="renderer.js"></script>
 </body>
 </html>
