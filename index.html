@@ -7,7 +7,7 @@
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; }
         input { width: 100%; padding: 10px; margin-bottom: 10px; }
-        button { padding: 10px; }
+        button { padding: 10px; margin-right: 10px; } /* Added margin for spacing */
         pre { background: #f4f4f4; padding: 10px; }
     </style>
 </head>
@@ -15,6 +15,7 @@
     <h1>CDLI API Client</h1>
     <input id="commandInput" type="text" placeholder="Enter command" />
     <button id="runButton">Run</button>
+    <button id="clearButton">Clear</button> <!-- Clear button added -->
     <pre id="output"></pre>
     <script src="renderer.js"></script>
 </body>
