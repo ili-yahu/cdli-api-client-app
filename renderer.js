@@ -135,31 +135,31 @@ document.getElementById('commandInput').addEventListener('input', (event) => {
         } 
         
         // Suggest period choices when the user types --fv after --filterField period
-        else if ((secondLastArgument === '--fv' || secondLastArgument === '--filterValue') && 
-                 (lastArgument === '' || lastArgument.startsWith('"') || lastArgument.startsWith("'"))) {
-            console.log('Period choices suggestions should be shown');
+else if ((secondLastArgument === '--fv' || secondLastArgument === '--filterValue') && 
+(lastArgument === '' || lastArgument.startsWith('"') || lastArgument.startsWith("'") || lastArgument.trim() !== "")) {
+console.log('Period choices suggestions should be shown');
 
-            // User input for filtering, removing quotes for comparison
-            const userInputForFiltering = lastArgument.replace(/['"]/g, "").toLowerCase();
+// User input for filtering, removing quotes for comparison
+const userInputForFiltering = lastArgument.replace(/['"]/g, "").toLowerCase(); // Remove quotes
 
-            const filteredPeriods = periodChoices.filter(choice => {
-                const strippedChoice = choice.replace(/['"]/g, "").toLowerCase(); // Remove quotes from period choices
-                return strippedChoice.includes(userInputForFiltering); // Compare without quotes
-            });
+const filteredPeriods = periodChoices.filter(choice => {
+const strippedChoice = choice.replace(/['"]/g, "").toLowerCase(); // Remove quotes from period choices
+return strippedChoice.includes(userInputForFiltering); // Compare without quotes
+});
 
-            filteredPeriods.forEach(choice => {
-                const listItem = document.createElement('li'); // Create a list item for each period choice
-                listItem.textContent = choice; // Set the text to the choice
-                listItem.addEventListener('click', () => {
-                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${choice}`; // Replace the last part with the selected choice
-                    document.getElementById('commandInput').value = newInput; 
-                    suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
-                });
-                suggestionsList.appendChild(listItem); // Append the item to the suggestions list
-            });
-            suggestionsList.style.display = 'block'; // Show the suggestions list for period choices
-            console.log('Filtered period choices shown:', filteredPeriods);
-        }
+filteredPeriods.forEach(choice => {
+const listItem = document.createElement('li'); // Create a list item for each period choice
+listItem.textContent = choice; // Set the text to the choice
+listItem.addEventListener('click', () => {
+   const newInput = `${inputParts.slice(0, -1).join(' ')} ${choice}`; // Replace the last part with the selected choice
+   document.getElementById('commandInput').value = newInput; 
+   suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
+});
+suggestionsList.appendChild(listItem); // Append the item to the suggestions list
+});
+suggestionsList.style.display = 'block'; // Show the suggestions list for period choices
+console.log('Filtered period choices shown:', filteredPeriods);
+}
 
         // Check for recognized flags (short form) and dynamically filter them
         else if (currentOptions[lastArgument] || 
