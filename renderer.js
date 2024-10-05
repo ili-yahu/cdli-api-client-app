@@ -1,6 +1,52 @@
 // Store the selected folder path globally
 let outputFolderPath = '';
 
+// Store the available commands and options for auto-suggestion
+const availableCommands = ['export', 'search', '--version', '--host, -h', '--format, -f', '--output-file, -o', '--help', '--entities, -e', '-q, --query', '--queryCategory, --qc', '--queryOperator, --qo', '--advancedField, --af', '--advancedQuery, --aq', '--filterField, --fk', '--filterValue, --fv'];
+
+// Choices for specific options (to be used for additional filtering in the suggestions)
+const queryCategories = ['keyword', 'publication', 'collection', 'provenience', 'period', 'transliteration', 'translation', 'id'];
+
+const queryOperators = ['AND', 'OR'];
+
+const formats = ['ndjson', 'csv', 'tsv', 'ntriples', 'bibtex', 'atf'];
+
+const entities = ['archives', 'artifacts', 'artifactsExternalResources', 'artifactsMaterials', 'collections', 'dates', 'dynasties', 'genres', 'inscriptions', 'languages', 'materials', 'materialAspects', 'materialColors', 'periods', 'proveniences', 'publications', 'regions', 'rulers'];
+
+// Capture user input and filter suggestions
+document.getElementById('commandInput').addEventListener('input', (event) => {
+    const input = event.target.value.toLowerCase(); // Get the current input value
+    const suggestionsList = document.getElementById('suggestions'); // Get the suggestions element
+    suggestionsList.innerHTML = ''; // Clear previous suggestions
+
+    // Filter available commands based on user input
+    const filteredCommands = availableCommands.filter(command => command.toLowerCase().includes(input));
+
+    // Display filtered suggestions
+    if (filteredCommands.length > 0 && input) {
+        suggestionsList.style.display = 'block'; // Show the suggestions list
+        filteredCommands.forEach(command => {
+            const listItem = document.createElement('li');
+            listItem.textContent = command; // Set the text to the command
+            listItem.addEventListener('click', () => {
+                document.getElementById('commandInput').value = command; // Autofill the input with the selected command
+                suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
+            });
+            suggestionsList.appendChild(listItem); // Append the item to the suggestions list
+        });
+    } else {
+        suggestionsList.style.display = 'none'; // Hide if no matches found
+    }
+});
+
+// Hide suggestions when clicking outside
+window.addEventListener('click', (event) => {
+    const suggestionsList = document.getElementById('suggestions');
+    if (!event.target.closest('#commandInput')) {
+        suggestionsList.style.display = 'none'; // Hide suggestions if clicking outside
+    }
+});
+
 // Run button functionality
 document.getElementById('runButton').addEventListener('click', async () => {
     const command = document.getElementById('commandInput').value;

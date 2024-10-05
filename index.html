@@ -48,11 +48,28 @@
             bottom: 20px;
             left: 20px;
         }
+        #suggestions {
+            border: 1px solid #ccc; /* Border for the suggestions box */
+            max-height: 150px; /* Limit the height */
+            overflow-y: auto; /* Scrollable if content exceeds height */
+            background-color: white; /* Background color for visibility */
+            position: absolute; /* Position it right below the input field */
+            z-index: 1; /* Ensure it appears above other elements */
+            width: calc(100% - 20px); /*  Match width of input with padding consideration */
+        }
+        #suggestions li {
+            padding: 10px; /* Padding for each suggestion item */
+            cursor: pointer; /* Change cursor on hover */
+        }
+        #suggestions li:hover {
+            background-color: #f0f0f0; /* Highlight item on hover */
+        }
     </style>
 </head>
 <body>
     <h1>CDLI API Client</h1>
     <input id="commandInput" type="text" placeholder="Enter command" />
+    <ul id="suggestions" style="list-style-type: none; padding: 0; display: none;"></ul>
     <button id="runButton">Run</button>
     <button id="clearButton">Clear</button>
     <button id="helpButton">?</button> 
