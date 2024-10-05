@@ -34,6 +34,7 @@ const commands = {
     },
 };
 
+// Period Choices Array
 const periodChoices = [
     "\"Pre-Writing (ca. 8500-3500 BC)\"",
     "\"Uruk V (ca. 3500-3350 BC)\"",
@@ -70,6 +71,102 @@ const periodChoices = [
     "\"no value\""
 ];
 
+// Store the available materials for auto-suggestion
+const materialChoices = [
+    "\"Egyptian blue\"",
+    "\"bitumen\"",
+    "\"bone\"",
+    "\"bone > ivory\"",
+    "\"bone > shell\"",
+    "\"clay\"",
+    "\"clay > ceramic\"",
+    "\"clay > porcelain\"",
+    "\"faience\"",
+    "\"frit\"",
+    "\"glass\"",
+    "\"metal\"",
+    "\"metal > bronze\"",
+    "\"metal > copper\"",
+    "\"metal > electrum\"",
+    "\"metal > gold\"",
+    "\"metal > iron\"",
+    "\"metal > iron oxide\"",
+    "\"metal > lead\"",
+    "\"metal > silver\"",
+    "\"stone\"",
+    "\"stone > aphrite\"",
+    "\"stone > igneous rock > basalt\"",
+    "\"stone > igneous rock > diorite\"",
+    "\"stone > igneous rock > felsite\"",
+    "\"stone > igneous rock > granite\"",
+    "\"stone > igneous rock > greenstone\"",
+    "\"stone > igneous rock > lava\"",
+    "\"stone > igneous rock > obsidian\"",
+    "\"stone > igneous rock > porphyry\"",
+    "\"stone > igneous rock > syenite\"",
+    "\"stone > igneous rock > trachyte\"",
+    "\"stone > igneous rock > tuff\"",
+    "\"stone > limonite\"",
+    "\"stone > metamorphic rock > gneiss\"",
+    "\"stone > metamorphic rock > hornfels\"",
+    "\"stone > metamorphic rock > jade\"",
+    "\"stone > metamorphic rock > lapis lazuli\"",
+    "\"stone > metamorphic rock > marble\"",
+    "\"stone > metamorphic rock > quartzite\"",
+    "\"stone > metamorphic rock > schist\"",
+    "\"stone > metamorphic rock > steatite\"",
+    "\"stone > mineral > agate\"",
+    "\"stone > mineral > alabaster\"",
+    "\"stone > mineral > amethyst\"",
+    "\"stone > mineral > aragonite\"",
+    "\"stone > mineral > azurite\"",
+    "\"stone > mineral > bloodstone\"",
+    "\"stone > mineral > calcite\"",
+    "\"stone > mineral > carnelian\"",
+    "\"stone > mineral > chalcedony\"",
+    "\"stone > mineral > chalcocite\"",
+    "\"stone > mineral > chlorite\"",
+    "\"stone > mineral > cornelian\"",
+    "\"stone > mineral > dolomite\"",
+    "\"stone > mineral > feldspar\"",
+    "\"stone > mineral > feldspar > amazonite\"",
+    "\"stone > mineral > garnet\"",
+    "\"stone > mineral > goethite\"",
+    "\"stone > mineral > gypsum\"",
+    "\"stone > mineral > hematite\"",
+    "\"stone > mineral > hornblende\"",
+    "\"stone > mineral > jadeite\"",
+    "\"stone > mineral > jasper\"",
+    "\"stone > mineral > magnesite\"",
+    "\"stone > mineral > magnetite\"",
+    "\"stone > mineral > malachite\"",
+    "\"stone > mineral > menaccanite\"",
+    "\"stone > mineral > mica\"",
+    "\"stone > mineral > nephrite\"",
+    "\"stone > mineral > onyx\"",
+    "\"stone > mineral > quartz\"",
+    "\"stone > mineral > rock crystal\"",
+    "\"stone > mineral > sardonyx\"",
+    "\"stone > mineral > serpentine\"",
+    "\"stone > mineral > serpentine > ophicalcite\"",
+    "\"stone > mineral > siderite\"",
+    "\"stone > mineral > talc\"",
+    "\"stone > mineral > turquoise\"",
+    "\"stone > polypary fossil\"",
+    "\"stone > quartz-dolerite\"",
+    "\"stone > sedimentary rock > basanite\"",
+    "\"stone > sedimentary rock > breccia\"",
+    "\"stone > sedimentary rock > chert\"",
+    "\"stone > sedimentary rock > flint\"",
+    "\"stone > sedimentary rock > limestone\"",
+    "\"stone > sedimentary rock > sandstone\"",
+    "\"stone > sedimentary rock > shale\"",
+    "\"stone > sedimentary rock > slate\"",
+    "\"stone > sedimentary rock > travertine\"",
+    "\"wood\"",
+    "\"no value\""
+];
+
 // Capture user input and filter suggestions
 document.getElementById('commandInput').addEventListener('input', (event) => {
     const input = event.target.value.trim(); // Get the current input value
@@ -77,13 +174,15 @@ document.getElementById('commandInput').addEventListener('input', (event) => {
     const command = inputParts[0]; // Get the command (first part)
     const lastArgument = inputParts.slice(-1)[0]; // Get the last argument
     const secondLastArgument = inputParts.slice(-2)[0]; // Get the second to last argument
+    const thirdLastArgument = inputParts.slice(-3)[0]; // Get the third to last argument
+    const fourthLastArgument = inputParts.slice(-4)[0]; // Get the fourth to last argument
     const suggestionsList = document.getElementById('suggestions'); // Get the suggestions element
     suggestionsList.innerHTML = ''; // Clear previous suggestions
     suggestionsList.style.display = 'none'; // Hide suggestions by default
 
     // Debugging: Add logs for input values
     console.log(`Input: "${input}"`);
-    console.log(`Command: "${command}", Last Argument: "${lastArgument}", Second Last Argument: "${secondLastArgument}"`);
+    console.log(`Command: "${command}", Last Argument: "${lastArgument}", Second Last Argument: "${secondLastArgument}", Third Last Argument: "${thirdLastArgument}", Fourth Last Argument: "${fourthLastArgument}"`);
 
     // Check if the command exists in our commands object
     if (commands[command]) {
@@ -115,8 +214,8 @@ document.getElementById('commandInput').addEventListener('input', (event) => {
         } 
         
         // Suggest filter value options when --filterField period is used
-        else if ((secondLastArgument === '--filterField' || secondLastArgument === '--fk') && lastArgument === 'period') {
-            console.log('Second last argument is "--filterField period"');
+        else if ((thirdLastArgument === '--filterField' || thirdLastArgument === '--fk') && secondLastArgument === 'period') {
+            console.log('Third last argument is "--filterField period"');
             const filterValueOptions = ['--fv', '--filterValue'];
 
             // Suggest filter value options
@@ -135,35 +234,64 @@ document.getElementById('commandInput').addEventListener('input', (event) => {
         } 
         
         // Suggest period choices when the user types --fv after --filterField period
-else if ((secondLastArgument === '--fv' || secondLastArgument === '--filterValue') && 
-(lastArgument === '' || lastArgument.startsWith('"') || lastArgument.startsWith("'") || lastArgument.trim() !== "")) {
-console.log('Period choices suggestions should be shown');
+        else if ((secondLastArgument === '--fv' || secondLastArgument === '--filterValue') && 
+                 thirdLastArgument === 'period') { // Check if thirdLastArgument is specifically 'period'
+            console.log('Period choices suggestions should be shown');
 
-// User input for filtering, removing quotes for comparison
-const userInputForFiltering = lastArgument.replace(/['"]/g, "").toLowerCase(); // Remove quotes
+            // User input for filtering, removing quotes for comparison
+            const userInputForFiltering = lastArgument.replace(/['"]/g, "").toLowerCase(); // Remove quotes
 
-const filteredPeriods = periodChoices.filter(choice => {
-const strippedChoice = choice.replace(/['"]/g, "").toLowerCase(); // Remove quotes from period choices
-return strippedChoice.includes(userInputForFiltering); // Compare without quotes
-});
+            const filteredPeriods = periodChoices.filter(choice => {
+                const strippedChoice = choice.replace(/['"]/g, "").toLowerCase(); // Remove quotes from period choices
+                return strippedChoice.includes(userInputForFiltering); // Compare without quotes
+            });
 
-filteredPeriods.forEach(choice => {
-const listItem = document.createElement('li'); // Create a list item for each period choice
-listItem.textContent = choice; // Set the text to the choice
-listItem.addEventListener('click', () => {
-   const newInput = `${inputParts.slice(0, -1).join(' ')} ${choice}`; // Replace the last part with the selected choice
-   document.getElementById('commandInput').value = newInput; 
-   suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
-});
-suggestionsList.appendChild(listItem); // Append the item to the suggestions list
-});
-suggestionsList.style.display = 'block'; // Show the suggestions list for period choices
-console.log('Filtered period choices shown:', filteredPeriods);
-}
+            // Append filtered period choices to suggestions list
+            filteredPeriods.forEach(choice => {
+                const listItem = document.createElement('li'); // Create a list item for each period choice
+                listItem.textContent = choice; // Set the text to the choice
+                listItem.addEventListener('click', () => {
+                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${choice}`; // Replace the last part with the selected choice
+                    document.getElementById('commandInput').value = newInput; 
+                    suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
+                });
+                suggestionsList.appendChild(listItem); // Append the item to the suggestions list
+            });
+            suggestionsList.style.display = 'block'; // Show the suggestions list for period choices
+            console.log('Filtered period choices shown:', filteredPeriods);
+        }
+
+        // Suggest material choices when the user types --fv after --filterField material
+        else if ((secondLastArgument === '--fv' || secondLastArgument === '--filterValue') && 
+                 thirdLastArgument === 'material') { // Check if thirdLastArgument is specifically 'material'
+            console.log('Material choices suggestions should be shown');
+
+            // User input for filtering, removing quotes for comparison
+            const userInputForFiltering = lastArgument.replace(/['"]/g, "").toLowerCase(); // Remove quotes
+
+            const filteredMaterials = materialChoices.filter(choice => {
+                const strippedChoice = choice.replace(/['"]/g, "").toLowerCase(); // Remove quotes from material choices
+                return strippedChoice.includes(userInputForFiltering); // Compare without quotes
+            });
+
+            // Append filtered material choices to suggestions list
+            filteredMaterials.forEach(choice => {
+                const listItem = document.createElement('li'); // Create a list item for each material choice
+                listItem.textContent = choice; // Set the text to the choice
+                listItem.addEventListener('click', () => {
+                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${choice}`; // Replace the last part with the selected choice
+                    document.getElementById('commandInput').value = newInput; 
+                    suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
+                });
+                suggestionsList.appendChild(listItem); // Append the item to the suggestions list
+            });
+            suggestionsList.style.display = 'block'; // Show the suggestions list for material choices
+            console.log('Filtered material choices shown:', filteredMaterials);
+        }
 
         // Check for recognized flags (short form) and dynamically filter them
         else if (currentOptions[lastArgument] || 
-                   Object.values(currentOptions).some(opt => opt.short === lastArgument)) {
+                 Object.values(currentOptions).some(opt => opt.short === lastArgument)) {
             const recognizedFlag = currentOptions[lastArgument] || 
                 Object.values(currentOptions).find(opt => opt.short === lastArgument);
             if (recognizedFlag) {
