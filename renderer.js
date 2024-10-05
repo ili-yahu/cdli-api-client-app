@@ -19,7 +19,11 @@ const commands = {
             },
             '--advancedField': { short: '--af', description: 'Advanced search field' },
             '--advancedQuery': { short: '--aq', description: 'Advanced search query' },
-            '--filterField': { short: '--fk', description: 'Filter by field' },
+            '--filterField': { 
+                short: '--fk', 
+                description: 'Filter by field',
+                choices: ['period'] // This will indicate to suggest choices for the period when --fk is used
+            },
             '--filterValue': { short: '--fv', description: 'Filter by value' },
             '--version': { description: 'Show version number' },
             '--host': { short: '-h', description: 'Host URL to use for API calls' },
@@ -32,32 +36,6 @@ const commands = {
             '--help': { description: 'Show help' },
         },
     },
-    'export': {
-        description: 'Export catalog and text data',
-        options: {
-            '--version': { description: 'Show version number' },
-            '--host': { short: '-h', description: 'Host URL to use for API calls' },
-            '--format': { 
-                short: '-f', 
-                description: 'File format', 
-                choices: ['ndjson', 'csv', 'tsv', 'ntriples', 'bibtex', 'atf'] 
-            },
-            '--output-file': { short: '-o', description: 'Output file' },
-            '--help': { description: 'Show help' },
-            '--entities': { 
-                short: '-e', 
-                description: 'Which types of entities to fetch', 
-                choices: [
-                    'archives', 'artifacts', 'artifactsExternalResources', 
-                    'artifactsMaterials', 'collections', 'dates', 
-                    'dynasties', 'genres', 'inscriptions', 
-                    'languages', 'materials', 'materialAspects', 
-                    'materialColors', 'periods', 'proveniences', 
-                    'publications', 'regions', 'rulers'
-                ] 
-            },
-        },
-    },
 };
 
 // Capture user input and filter suggestions
@@ -66,6 +44,7 @@ document.getElementById('commandInput').addEventListener('input', (event) => {
     const inputParts = input.split(/\s+/); // Split the input by whitespace
     const command = inputParts[0]; // Get the command (first part)
     const lastArgument = inputParts.slice(-1)[0]; // Get the last argument
+    const secondLastArgument = inputParts.slice(-2)[0]; // Get the second to last argument
     const suggestionsList = document.getElementById('suggestions'); // Get the suggestions element
     suggestionsList.innerHTML = ''; // Clear previous suggestions
     suggestionsList.style.display = 'none'; // Hide suggestions by default
@@ -75,9 +54,9 @@ document.getElementById('commandInput').addEventListener('input', (event) => {
         const currentOptions = commands[command].options; // Get options for the current command
 
         // Debugging: Log the command and last argument
-        console.log(`Command: ${command}, Last Argument: "${lastArgument}"`);
+        console.log(`Command: ${command}, Last Argument: "${lastArgument}", Second Last Argument: "${secondLastArgument}"`);
 
-        // Determine if the last argument is a recognized flag
+        // Check if the last argument is a recognized flag
         if (currentOptions[lastArgument] || 
             Object.values(currentOptions).some(opt => opt.short === lastArgument)) {
             // If it's a recognized flag, suggest choices for that argument
@@ -89,8 +68,8 @@ document.getElementById('commandInput').addEventListener('input', (event) => {
                     const listItem = document.createElement('li'); // Create a list item for each choice
                     listItem.textContent = choice; // Set the text to the choice
                     listItem.addEventListener('click', () => {
-                        // Autofill the input with the selected choice
-                        const newInput = inputParts.slice(0, -1).join(' ') + ' ' + choice; 
+                        // Autofill the input with the selected choice while keeping all previous arguments intact
+                        const newInput = `${inputParts.join(' ')} ${choice}`; // Keep the entire command intact
                         document.getElementById('commandInput').value = newInput; 
                         suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
                     });
