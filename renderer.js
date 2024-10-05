@@ -19,11 +19,7 @@ const commands = {
             },
             '--advancedField': { short: '--af', description: 'Advanced search field' },
             '--advancedQuery': { short: '--aq', description: 'Advanced search query' },
-            '--filterField': { 
-                short: '--fk', 
-                description: 'Filter by field',
-                choices: ['period'] // This will indicate to suggest choices for the period when --fk is used
-            },
+            '--filterField': { short: '--fk', description: 'Filter by field' },
             '--filterValue': { short: '--fv', description: 'Filter by value' },
             '--version': { description: 'Show version number' },
             '--host': { short: '-h', description: 'Host URL to use for API calls' },
@@ -44,31 +40,51 @@ document.getElementById('commandInput').addEventListener('input', (event) => {
     const inputParts = input.split(/\s+/); // Split the input by whitespace
     const command = inputParts[0]; // Get the command (first part)
     const lastArgument = inputParts.slice(-1)[0]; // Get the last argument
-    const secondLastArgument = inputParts.slice(-2)[0]; // Get the second to last argument
     const suggestionsList = document.getElementById('suggestions'); // Get the suggestions element
     suggestionsList.innerHTML = ''; // Clear previous suggestions
     suggestionsList.style.display = 'none'; // Hide suggestions by default
+
+    // Debugging: Log the command and arguments
+    console.log(`Input: "${input}", Command: "${command}", Last Argument: "${lastArgument}"`);
 
     // Check if the command exists in our commands object
     if (commands[command]) {
         const currentOptions = commands[command].options; // Get options for the current command
 
-        // Debugging: Log the command and last argument
-        console.log(`Command: ${command}, Last Argument: "${lastArgument}", Second Last Argument: "${secondLastArgument}"`);
+        // Check if the last argument starts with '--' for flag suggestions
+        if (lastArgument.startsWith('--')) {
+            // Filter options based on the last argument
+            const filteredOptions = Object.keys(currentOptions).filter(option => option.startsWith(lastArgument));
 
-        // Check if the last argument is a recognized flag
-        if (currentOptions[lastArgument] || 
-            Object.values(currentOptions).some(opt => opt.short === lastArgument)) {
-            // If it's a recognized flag, suggest choices for that argument
-            const optionKey = currentOptions[lastArgument] ? lastArgument : Object.keys(currentOptions).find(key => currentOptions[key].short === lastArgument);
-            if (optionKey && currentOptions[optionKey].choices) {
-                // Filter and show choices if they exist
-                const choices = currentOptions[optionKey].choices;
+            // Suggest the filtered flags
+            filteredOptions.forEach(option => {
+                const listItem = document.createElement('li'); // Create a list item for each option
+                listItem.textContent = option; // Set the text to the option
+                listItem.addEventListener('click', () => {
+                    // Autofill the input with the selected command and option
+                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${option}`; 
+                    document.getElementById('commandInput').value = newInput; 
+                    suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
+                });
+                suggestionsList.appendChild(listItem); // Append the item to the suggestions list
+            });
+
+            // Only show suggestions if there are any filtered options
+            if (filteredOptions.length > 0) {
+                suggestionsList.style.display = 'block'; // Show the suggestions list
+            }
+        } else {
+            // Check for recognized flags (short form)
+            const recognizedFlag = currentOptions[lastArgument] || 
+                Object.values(currentOptions).find(opt => opt.short === lastArgument);
+                
+            if (recognizedFlag) {
+                // Suggest choices for that argument
+                const choices = recognizedFlag.choices || [];
                 choices.forEach(choice => {
                     const listItem = document.createElement('li'); // Create a list item for each choice
                     listItem.textContent = choice; // Set the text to the choice
                     listItem.addEventListener('click', () => {
-                        // Autofill the input with the selected choice while keeping all previous arguments intact
                         const newInput = `${inputParts.join(' ')} ${choice}`; // Keep the entire command intact
                         document.getElementById('commandInput').value = newInput; 
                         suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
@@ -77,29 +93,10 @@ document.getElementById('commandInput').addEventListener('input', (event) => {
                 });
                 suggestionsList.style.display = 'block'; // Show the suggestions list
             }
-        } else {
-            // Filter options based on the last argument typed
-            const filteredOptions = Object.keys(currentOptions).filter(option => {
-                return option.toLowerCase().includes(lastArgument.toLowerCase()) || 
-                       (currentOptions[option].short && currentOptions[option].short.toLowerCase().includes(lastArgument.toLowerCase())); // Include short forms
-            });
-
-            // Display filtered suggestions
-            if (filteredOptions.length > 0) {
-                suggestionsList.style.display = 'block'; // Show the suggestions list
-                filteredOptions.forEach(option => {
-                    const listItem = document.createElement('li'); // Create a list item for each suggestion
-                    listItem.textContent = option; // Set the text to the option
-                    listItem.addEventListener('click', () => {
-                        // Autofill the input with the selected command and option
-                        const newInput = inputParts.slice(0, -1).join(' ') + ' ' + option; 
-                        document.getElementById('commandInput').value = newInput; 
-                        suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
-                    });
-                    suggestionsList.appendChild(listItem); // Append the item to the suggestions list
-                });
-            }
         }
+    } else {
+        // Log if the command is not recognized
+        console.log(`Unrecognized command: "${command}"`);
     }
 });
 
