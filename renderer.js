@@ -34,26 +34,65 @@ const commands = {
     },
 };
 
+const periodChoices = [
+    "\"Pre-Writing (ca. 8500-3500 BC)\"",
+    "\"Uruk V (ca. 3500-3350 BC)\"",
+    "\"Uruk IV (ca. 3350-3200 BC)\"",
+    "\"Egyptian 0 (ca. 3300-3000 BC)\"",
+    "\"Uruk III (ca. 3200-3000 BC)\"",
+    "\"Proto-Elamite (ca. 3100-2900 BC)\"",
+    "\"ED I-II (ca. 2900-2700 BC)\"",
+    "\"ED IIIa (ca. 2600-2500 BC)\"",
+    "\"ED IIIb (ca. 2500-2340 BC)\"",
+    "\"Ebla (ca. 2350-2250 BC)\"",
+    "\"Old Akkadian (ca. 2340-2200 BC)\"",
+    "\"Old Elamite (c. 2600-1500 BC)\"",
+    "\"Linear Elamite (ca. 2200 BC)\"",
+    "\"Lagash II (ca. 2200-2100 BC)\"",
+    "\"Harappan (ca. 2200-1900 BC)\"",
+    "\"Ur III (ca. 2100-2000 BC)\"",
+    "\"Early Old Babylonian (ca. 2000-1900 BC)\"",
+    "\"Old Assyrian (ca. 1950-1850 BC)\"",
+    "\"Old Babylonian (ca. 1900-1600 BC)\"",
+    "\"Middle Hittite (ca. 1500-1100 BC)\"",
+    "\"Middle Babylonian (ca. 1400-1100 BC)\"",
+    "\"Middle Assyrian (ca. 1400-1000 BC)\"",
+    "\"Middle Elamite (ca. 1500-1100 BC)\"",
+    "\"Early Neo-Babylonian (ca. 1150-730 BC)\"",
+    "\"Neo-Assyrian (ca. 911-612 BC)\"",
+    "\"Neo-Elamite (ca. 770-539 BC)\"",
+    "\"Neo-Babylonian (ca. 626-539 BC)\"",
+    "\"Achaemenid (547-331 BC)\"",
+    "\"Hellenistic (323-63 BC)\"",
+    "\"Parthian (247 BC - 224 AD)\"",
+    "\"Sassanian (224-641 AD)\"",
+    "\"modern\"",
+    "\"no value\""
+];
+
 // Capture user input and filter suggestions
 document.getElementById('commandInput').addEventListener('input', (event) => {
     const input = event.target.value.trim(); // Get the current input value
     const inputParts = input.split(/\s+/); // Split the input by whitespace
     const command = inputParts[0]; // Get the command (first part)
     const lastArgument = inputParts.slice(-1)[0]; // Get the last argument
+    const secondLastArgument = inputParts.slice(-2)[0]; // Get the second to last argument
     const suggestionsList = document.getElementById('suggestions'); // Get the suggestions element
     suggestionsList.innerHTML = ''; // Clear previous suggestions
     suggestionsList.style.display = 'none'; // Hide suggestions by default
 
-    // Debugging: Log the command and arguments
-    console.log(`Input: "${input}", Command: "${command}", Last Argument: "${lastArgument}"`);
+    // Debugging: Add logs for input values
+    console.log(`Input: "${input}"`);
+    console.log(`Command: "${command}", Last Argument: "${lastArgument}", Second Last Argument: "${secondLastArgument}"`);
 
     // Check if the command exists in our commands object
     if (commands[command]) {
         const currentOptions = commands[command].options; // Get options for the current command
+        console.log('Command recognized:', command);
 
-        // Check if the last argument starts with '--' for flag suggestions
+        // Dynamic filtering for flags (suggest flags dynamically as you type)
         if (lastArgument.startsWith('--')) {
-            // Filter options based on the last argument
+            console.log('Last argument starts with "--"');
             const filteredOptions = Object.keys(currentOptions).filter(option => option.startsWith(lastArgument));
 
             // Suggest the filtered flags
@@ -61,8 +100,7 @@ document.getElementById('commandInput').addEventListener('input', (event) => {
                 const listItem = document.createElement('li'); // Create a list item for each option
                 listItem.textContent = option; // Set the text to the option
                 listItem.addEventListener('click', () => {
-                    // Autofill the input with the selected command and option
-                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${option}`; 
+                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${option}`; // Replace the last part with the selected option
                     document.getElementById('commandInput').value = newInput; 
                     suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
                 });
@@ -72,31 +110,82 @@ document.getElementById('commandInput').addEventListener('input', (event) => {
             // Only show suggestions if there are any filtered options
             if (filteredOptions.length > 0) {
                 suggestionsList.style.display = 'block'; // Show the suggestions list
+                console.log('Flag suggestions shown:', filteredOptions);
             }
-        } else {
-            // Check for recognized flags (short form)
+        } 
+        
+        // Suggest filter value options when --filterField period is used
+        else if ((secondLastArgument === '--filterField' || secondLastArgument === '--fk') && lastArgument === 'period') {
+            console.log('Second last argument is "--filterField period"');
+            const filterValueOptions = ['--fv', '--filterValue'];
+
+            // Suggest filter value options
+            filterValueOptions.forEach(option => {
+                const listItem = document.createElement('li'); // Create a list item for each filter value option
+                listItem.textContent = option; // Set the text to the option
+                listItem.addEventListener('click', () => {
+                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${option}`; // Replace the last part with the selected option
+                    document.getElementById('commandInput').value = newInput; 
+                    suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
+                });
+                suggestionsList.appendChild(listItem); // Append the item to the suggestions list
+            });
+            suggestionsList.style.display = 'block'; // Show the suggestions list for filter value options
+            console.log('Filter value suggestions shown:', filterValueOptions);
+        } 
+        
+        // Suggest period choices when the user types --fv after --filterField period
+        else if ((secondLastArgument === '--fv' || secondLastArgument === '--filterValue') && 
+                 (lastArgument === '' || lastArgument.startsWith('"') || lastArgument.startsWith("'"))) {
+            console.log('Period choices suggestions should be shown');
+
+            // User input for filtering, removing quotes for comparison
+            const userInputForFiltering = lastArgument.replace(/['"]/g, "").toLowerCase();
+
+            const filteredPeriods = periodChoices.filter(choice => {
+                const strippedChoice = choice.replace(/['"]/g, "").toLowerCase(); // Remove quotes from period choices
+                return strippedChoice.includes(userInputForFiltering); // Compare without quotes
+            });
+
+            filteredPeriods.forEach(choice => {
+                const listItem = document.createElement('li'); // Create a list item for each period choice
+                listItem.textContent = choice; // Set the text to the choice
+                listItem.addEventListener('click', () => {
+                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${choice}`; // Replace the last part with the selected choice
+                    document.getElementById('commandInput').value = newInput; 
+                    suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
+                });
+                suggestionsList.appendChild(listItem); // Append the item to the suggestions list
+            });
+            suggestionsList.style.display = 'block'; // Show the suggestions list for period choices
+            console.log('Filtered period choices shown:', filteredPeriods);
+        }
+
+        // Check for recognized flags (short form) and dynamically filter them
+        else if (currentOptions[lastArgument] || 
+                   Object.values(currentOptions).some(opt => opt.short === lastArgument)) {
             const recognizedFlag = currentOptions[lastArgument] || 
                 Object.values(currentOptions).find(opt => opt.short === lastArgument);
-                
             if (recognizedFlag) {
-                // Suggest choices for that argument
                 const choices = recognizedFlag.choices || [];
-                choices.forEach(choice => {
+                const filteredChoices = choices.filter(choice => choice.toLowerCase().includes(lastArgument.toLowerCase()));
+                
+                filteredChoices.forEach(choice => {
                     const listItem = document.createElement('li'); // Create a list item for each choice
                     listItem.textContent = choice; // Set the text to the choice
                     listItem.addEventListener('click', () => {
-                        const newInput = `${inputParts.join(' ')} ${choice}`; // Keep the entire command intact
+                        const newInput = `${inputParts.slice(0, -1).join(' ')} ${choice}`; // Replace the last part with the selected choice
                         document.getElementById('commandInput').value = newInput; 
                         suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
                     });
                     suggestionsList.appendChild(listItem); // Append the item to the suggestions list
                 });
                 suggestionsList.style.display = 'block'; // Show the suggestions list
+                console.log('Filtered flag choices shown:', filteredChoices);
             }
         }
     } else {
-        // Log if the command is not recognized
-        console.log(`Unrecognized command: "${command}"`);
+        console.log('Unrecognized command:', command);
     }
 });
 
