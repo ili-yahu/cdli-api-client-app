@@ -2,40 +2,90 @@
 let outputFolderPath = '';
 
 // Store the available commands and options for auto-suggestion
-const availableCommands = ['export', 'search', '--version', '--host, -h', '--format, -f', '--output-file, -o', '--help', '--entities, -e', '-q, --query', '--queryCategory, --qc', '--queryOperator, --qo', '--advancedField, --af', '--advancedQuery, --aq', '--filterField, --fk', '--filterValue, --fv'];
-
-// Choices for specific options (to be used for additional filtering in the suggestions)
-const queryCategories = ['keyword', 'publication', 'collection', 'provenience', 'period', 'transliteration', 'translation', 'id'];
-
-const queryOperators = ['AND', 'OR'];
-
-const formats = ['ndjson', 'csv', 'tsv', 'ntriples', 'bibtex', 'atf'];
-
-const entities = ['archives', 'artifacts', 'artifactsExternalResources', 'artifactsMaterials', 'collections', 'dates', 'dynasties', 'genres', 'inscriptions', 'languages', 'materials', 'materialAspects', 'materialColors', 'periods', 'proveniences', 'publications', 'regions', 'rulers'];
+const commands = {
+    'search': {
+        description: 'Search artifacts in the catalog',
+        options: {
+            '--query': { short: '-q', description: 'Search query' },
+            '--queryCategory': { short: '--qc', description: 'Search category (choices: "keyword", "publication", "collection", "provenience", "period", "transliteration", "translation", "id")' },
+            '--queryOperator': { short: '--qo', description: 'Search operator (choices: "AND", "OR")' },
+            '--advancedField': { short: '--af', description: 'Advanced search field' },
+            '--advancedQuery': { short: '--aq', description: 'Advanced search query' },
+            '--filterField': { short: '--fk', description: 'Filter by field' },
+            '--filterValue': { short: '--fv', description: 'Filter by value' },
+            '--version': { description: 'Show version number' },
+            '--host': { short: '-h', description: 'Host URL to use for API calls' },
+            '--format': { short: '-f', description: 'File format (choices: "ndjson", "csv", "tsv", "ntriples", "bibtex", "atf")' },
+            '--output-file': { short: '-o', description: 'Output file' },
+            '--help': { description: 'Show help' },
+        },
+    },
+    'export': {
+        description: 'Export catalog and text data',
+        options: {
+            '--version': { description: 'Show version number' },
+            '--host': { short: '-h', description: 'Host URL to use for API calls' },
+            '--format': { short: '-f', description: 'File format (choices: "ndjson", "csv", "tsv", "ntriples", "bibtex", "atf")' },
+            '--output-file': { short: '-o', description: 'Output file' },
+            '--help': { description: 'Show help' },
+            '--entities': { short: '-e', description: 'Which types of entities to fetch (choices: "archives", "artifacts", "artifactsExternalResources", "artifactsMaterials", "collections", "dates", "dynasties", "genres", "inscriptions", "languages", "materials", "materialAspects", "materialColors", "periods", "proveniences", "publications", "regions", "rulers")' },
+        },
+    },
+};
 
 // Capture user input and filter suggestions
 document.getElementById('commandInput').addEventListener('input', (event) => {
-    const input = event.target.value.toLowerCase(); // Get the current input value
+    const input = event.target.value.trim(); // Get the current input value
+    const inputParts = input.split(/\s+/); // Split the input by whitespace
+    const command = inputParts[0]; // Get the command (first part)
+    const lastArgument = inputParts.slice(-1)[0]; // Get the last argument
+    const previousArgument = inputParts.slice(-2)[0]; // Get the second to last argument
     const suggestionsList = document.getElementById('suggestions'); // Get the suggestions element
     suggestionsList.innerHTML = ''; // Clear previous suggestions
+    suggestionsList.style.display = 'none'; // Hide suggestions by default
 
-    // Filter available commands based on user input
-    const filteredCommands = availableCommands.filter(command => command.toLowerCase().includes(input));
+    // Check if the command exists in our commands object
+    if (commands[command]) {
+        const currentOptions = commands[command].options; // Get options for the current command
 
-    // Display filtered suggestions
-    if (filteredCommands.length > 0 && input) {
-        suggestionsList.style.display = 'block'; // Show the suggestions list
-        filteredCommands.forEach(command => {
-            const listItem = document.createElement('li');
-            listItem.textContent = command; // Set the text to the command
-            listItem.addEventListener('click', () => {
-                document.getElementById('commandInput').value = command; // Autofill the input with the selected command
-                suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
-            });
-            suggestionsList.appendChild(listItem); // Append the item to the suggestions list
+        // Debugging: Log the command and last argument
+        console.log(`Command: ${command}, Last Argument: "${lastArgument}", Previous Argument: "${previousArgument}"`);
+
+        // Determine whether to suggest based on the last or previous argument
+        let filterInput = lastArgument; // Default to last argument
+        let isFlag = false;
+
+        // Check if the last argument is a flag (starts with `--` or `-`)
+        if (lastArgument.startsWith('--') || lastArgument.startsWith('-')) {
+            isFlag = true; // It's a flag, we should suggest related options
+            // Filter options based on the last argument typed
+            filterInput = lastArgument; // Use the last argument as the filter
+        }
+
+        // Filter options based on the last argument typed
+        const filteredOptions = Object.keys(currentOptions).filter(option => {
+            return option.toLowerCase().includes(filterInput.toLowerCase()) || 
+                   (currentOptions[option].short && currentOptions[option].short.toLowerCase().includes(filterInput.toLowerCase())); // Include short forms
         });
-    } else {
-        suggestionsList.style.display = 'none'; // Hide if no matches found
+
+        // Debugging: Log filtered options
+        console.log(`Filtered Options: ${filteredOptions}`);
+
+        // Display filtered suggestions
+        if (filteredOptions.length > 0) {
+            suggestionsList.style.display = 'block'; // Show the suggestions list
+            filteredOptions.forEach(option => {
+                const listItem = document.createElement('li'); // Create a list item for each suggestion
+                listItem.textContent = option; // Set the text to the option
+                listItem.addEventListener('click', () => {
+                    // Autofill the input with the selected command and option
+                    const newInput = inputParts.slice(0, -1).join(' ') + ' ' + option; 
+                    document.getElementById('commandInput').value = newInput; 
+                    suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
+                });
+                suggestionsList.appendChild(listItem); // Append the item to the suggestions list
+            });
+        }
     }
 });
 
@@ -46,6 +96,7 @@ window.addEventListener('click', (event) => {
         suggestionsList.style.display = 'none'; // Hide suggestions if clicking outside
     }
 });
+
 
 // Run button functionality
 document.getElementById('runButton').addEventListener('click', async () => {
