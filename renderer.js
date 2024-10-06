@@ -152,10 +152,51 @@ document.getElementById('commandInput').addEventListener('input', (event) => {
             suggestionsList.style.display = 'block'; 
             console.log('Filtered choices shown:', filteredChoices);
         }
+
+        // Show all relevant suggestions when --fv is followed by a space
+        else if (secondLastArgument === '--fv' && lastArgument === '') {
+            console.log('Displaying all suggestions for', thirdLastArgument);
+            
+            let allChoices;
+            switch (thirdLastArgument) {
+                case 'language':
+                    allChoices = languageChoices;
+                    break;
+                case 'material':
+                    allChoices = materialChoices;
+                    break;
+                case 'provenience':
+                    allChoices = provenienceChoices;
+                    break;
+                case 'period':
+                    allChoices = periodChoices;
+                    break;
+                case 'genre':
+                    allChoices = genreChoices;
+                    break;
+                default:
+                    allChoices = [];
+            }
+
+            allChoices.forEach(choice => {
+                const listItem = document.createElement('li');
+                listItem.textContent = choice;
+                listItem.addEventListener('click', () => {
+                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${choice}`; 
+                    document.getElementById('commandInput').value = newInput; 
+                    suggestionsList.style.display = 'none'; 
+                });
+                suggestionsList.appendChild(listItem);
+            });
+
+            suggestionsList.style.display = 'block'; 
+            console.log('All choices displayed:', allChoices);
+        }
     } else {
         console.log('Unrecognized command:', command);
     }
 });
+
 
 // Hide suggestions when clicking outside
 window.addEventListener('click', (event) => {
