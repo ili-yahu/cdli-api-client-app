@@ -152,49 +152,37 @@ document.getElementById('commandInput').addEventListener('input', (event) => {
             suggestionsList.style.display = 'block'; 
             console.log('Filtered choices shown:', filteredChoices);
         }
-
-        // Show all relevant suggestions when --fv is followed by a space
-        else if (secondLastArgument === '--fv' && lastArgument === '') {
-            console.log('Displaying all suggestions for', thirdLastArgument);
-            
-            let allChoices;
-            switch (thirdLastArgument) {
-                case 'language':
-                    allChoices = languageChoices;
-                    break;
-                case 'material':
-                    allChoices = materialChoices;
-                    break;
-                case 'provenience':
-                    allChoices = provenienceChoices;
-                    break;
-                case 'period':
-                    allChoices = periodChoices;
-                    break;
-                case 'genre':
-                    allChoices = genreChoices;
-                    break;
-                default:
-                    allChoices = [];
-            }
-
-            allChoices.forEach(choice => {
-                const listItem = document.createElement('li');
-                listItem.textContent = choice;
-                listItem.addEventListener('click', () => {
-                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${choice}`; 
-                    document.getElementById('commandInput').value = newInput; 
-                    suggestionsList.style.display = 'none'; 
-                });
-                suggestionsList.appendChild(listItem);
-            });
-
-            suggestionsList.style.display = 'block'; 
-            console.log('All choices displayed:', allChoices);
-        }
     } else {
         console.log('Unrecognized command:', command);
     }
+
+    // Keydown event listener for navigating suggestions
+    let highlightedIndex = -1; // Track the currently highlighted suggestion
+    document.addEventListener('keydown', (e) => {
+        const suggestionItems = suggestionsList.getElementsByTagName('li');
+        if (suggestionItems.length > 0) {
+            if (e.key === 'ArrowDown') {
+                // Move down the list
+                highlightedIndex = (highlightedIndex + 1) % suggestionItems.length; // Loop around
+            } else if (e.key === 'ArrowUp') {
+                // Move up the list
+                highlightedIndex = (highlightedIndex - 1 + suggestionItems.length) % suggestionItems.length; // Loop around
+            } else if (e.key === 'Enter') {
+                // Select the highlighted suggestion
+                if (highlightedIndex >= 0) {
+                    const selectedSuggestion = suggestionItems[highlightedIndex].textContent;
+                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${selectedSuggestion}`; 
+                    document.getElementById('commandInput').value = newInput; 
+                    suggestionsList.style.display = 'none'; // Hide suggestions after selection
+                }
+            }
+
+            // Highlight the current suggestion
+            Array.from(suggestionItems).forEach((item, index) => {
+                item.style.backgroundColor = index === highlightedIndex ? '#b3d4fc' : ''; // Change background for the highlighted item
+            });
+        }
+    });
 });
 
 
