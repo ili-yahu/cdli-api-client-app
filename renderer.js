@@ -79,207 +79,78 @@ document.getElementById('commandInput').addEventListener('input', (event) => {
         const currentOptions = commands[command].options; // Get options for the current command
         console.log('Command recognized:', command);
 
-        // Dynamic filtering for flags (suggest flags dynamically as you type)
+        // Dynamic filtering for flags
         if (lastArgument.startsWith('--')) {
             console.log('Last argument starts with "--"');
             const filteredOptions = Object.keys(currentOptions).filter(option => option.startsWith(lastArgument));
 
             // Suggest the filtered flags
             filteredOptions.forEach(option => {
-                const listItem = document.createElement('li'); // Create a list item for each option
-                listItem.textContent = option; // Set the text to the option
+                const listItem = document.createElement('li'); 
+                listItem.textContent = option; 
                 listItem.addEventListener('click', () => {
-                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${option}`; // Replace the last part with the selected option
+                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${option}`; 
                     document.getElementById('commandInput').value = newInput; 
-                    suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
+                    suggestionsList.style.display = 'none'; 
                 });
-                suggestionsList.appendChild(listItem); // Append the item to the suggestions list
+                suggestionsList.appendChild(listItem); 
             });
 
-            // Only show suggestions if there are any filtered options
             if (filteredOptions.length > 0) {
-                suggestionsList.style.display = 'block'; // Show the suggestions list
+                suggestionsList.style.display = 'block'; 
                 console.log('Flag suggestions shown:', filteredOptions);
             }
         } 
-        // Suggest filter value options when --filterField is used
-        if ((secondLastArgument === '--filterField' || secondLastArgument === '--fk') && lastArgument === 'language') {
-            const filterValueOptions = ['--fv', '--filterValue'];
 
-            // Suggest filter value options
-            filterValueOptions.forEach(option => {
-                const listItem = document.createElement('li'); // Create a list item for each filter value option
-                listItem.textContent = option; // Set the text to the option
-                listItem.addEventListener('click', () => {
-                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${option}`; // Replace the last part with the selected option
-                    document.getElementById('commandInput').value = newInput; 
-                    suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
-                });
-                suggestionsList.appendChild(listItem); // Append the item to the suggestions list
-            });
-            suggestionsList.style.display = 'block'; // Show the suggestions list for filter value options
-            console.log('Filter value suggestions shown:', filterValueOptions);
-        } 
-        // Suggest language choices when the user types --fv after --filterField language
-         else if ((secondLastArgument === '--fv' || secondLastArgument === '--filterValue') && 
-         thirdLastArgument === 'language') {
-             // User input for filtering, removing quotes for comparison
-             const userInputForFiltering = lastArgument.replace(/['"]/g, "").toLowerCase(); // Remove quotes
-             const filteredLanguages = languageChoices.filter(choice => {
-                 const strippedChoice = choice.replace(/['"]/g, "").toLowerCase(); // Remove quotes from language choices
-                 return strippedChoice.includes(userInputForFiltering); // Compare without quotes
-             });
- 
-             filteredLanguages.forEach(choice => {
-                 const listItem = document.createElement('li'); // Create a list item for each language choice
-                 listItem.textContent = choice; // Set the text to the choice
-                 listItem.addEventListener('click', () => {
-                     const newInput = `${inputParts.slice(0, -1).join(' ')} ${choice}`; // Replace the last part with the selected choice
-                     document.getElementById('commandInput').value = newInput; 
-                     suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
-                 });
-                 suggestionsList.appendChild(listItem); // Append the item to the suggestions list
-             });
-             suggestionsList.style.display = 'block'; // Show the suggestions list for language choices
-             console.log('Filtered language choices shown:', filteredLanguages);
-         }
-        
-        // Suggest filter value options when --filterField period is used
-        else if ((secondLastArgument === '--filterField' || secondLastArgument === '--fk') && lastArgument === 'period') {
-            console.log('Second last argument is "--filterField period"');
-            const filterValueOptions = ['--fv', '--filterValue'];
-
-            // Suggest filter value options
-            filterValueOptions.forEach(option => {
-                const listItem = document.createElement('li'); // Create a list item for each filter value option
-                listItem.textContent = option; // Set the text to the option
-                listItem.addEventListener('click', () => {
-                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${option}`; // Replace the last part with the selected option
-                    document.getElementById('commandInput').value = newInput; 
-                    suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
-                });
-                suggestionsList.appendChild(listItem); // Append the item to the suggestions list
-            });
-            suggestionsList.style.display = 'block'; // Show the suggestions list for filter value options
-            console.log('Filter value suggestions shown:', filterValueOptions);
-        }
-
-        // Suggest filter value options when --filterField material is used
-        else if ((secondLastArgument === '--filterField' || secondLastArgument === '--fk') && lastArgument === 'material') {
-            console.log('Second last argument is "--filterField material"');
-            const filterValueOptions = ['--fv', '--filterValue'];
-
-            // Suggest filter value options
-            filterValueOptions.forEach(option => {
-                const listItem = document.createElement('li'); // Create a list item for each filter value option
-                listItem.textContent = option; // Set the text to the option
-                listItem.addEventListener('click', () => {
-                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${option}`; // Replace the last part with the selected option
-                    document.getElementById('commandInput').value = newInput; 
-                    suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
-                });
-                suggestionsList.appendChild(listItem); // Append the item to the suggestions list
-            });
-            suggestionsList.style.display = 'block'; // Show the suggestions list for filter value options
-            console.log('Filter value suggestions shown:', filterValueOptions);
-        }
-
-        // Suggest filter value options when --filterField provenience is used
-        else if ((secondLastArgument === '--filterField' || secondLastArgument === '--fk') && lastArgument === 'provenience') {
-            console.log('Second last argument is "--filterField provenience"');
-            const filterValueOptions = ['--fv', '--filterValue'];
-
-            // Suggest filter value options
-            filterValueOptions.forEach(option => {
-                const listItem = document.createElement('li'); // Create a list item for each filter value option
-                listItem.textContent = option; // Set the text to the option
-                listItem.addEventListener('click', () => {
-                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${option}`; // Replace the last part with the selected option
-                    document.getElementById('commandInput').value = newInput; 
-                    suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
-                });
-                suggestionsList.appendChild(listItem); // Append the item to the suggestions list
-            });
-            suggestionsList.style.display = 'block'; // Show the suggestions list for filter value options
-            console.log('Filter value suggestions shown:', filterValueOptions);
-        }
-
-        // Suggest genre choices when the user types --fv after --filterField genre
+        // Suggest relevant choices for <something> when user types --fk <something> --fv
         else if ((secondLastArgument === '--fv' || secondLastArgument === '--filterValue') && 
-        (thirdLastArgument === 'genre' || thirdLastArgument === '--fk')) {
-            console.log('Genre choices suggestions should be shown');
+                 (thirdLastArgument === 'language' || thirdLastArgument === 'material' || thirdLastArgument === 'provenience' || thirdLastArgument === 'period' || thirdLastArgument === 'genre')) {
+            
+            console.log('Choices suggestions should be shown for', thirdLastArgument);
 
             // User input for filtering, removing quotes for comparison
             const userInputForFiltering = lastArgument.replace(/['"]/g, "").toLowerCase(); // Remove quotes
 
-            const filteredGenres = genreChoices.filter(choice => {
-                const strippedChoice = choice.replace(/['"]/g, "").toLowerCase(); // Remove quotes from genre choices
-                return strippedChoice.includes(userInputForFiltering); // Compare without quotes
-            });
-
-            filteredGenres.forEach(choice => {
-                const listItem = document.createElement('li'); // Create a list item for each genre choice
-                listItem.textContent = choice; // Set the text to the choice
-                listItem.addEventListener('click', () => {
-                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${choice}`; // Replace the last part with the selected choice
-                    document.getElementById('commandInput').value = newInput; 
-                    suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
-                });
-                suggestionsList.appendChild(listItem); // Append the item to the suggestions list
-            });
-            suggestionsList.style.display = 'block'; // Show the suggestions list for genre choices
-            console.log('Filtered genre choices shown:', filteredGenres);
-        }
-
-        // Suggest period choices when the user types --fv after --filterField period
-        else if ((secondLastArgument === '--fv' || secondLastArgument === '--filterValue') && 
-        (thirdLastArgument === 'period' || thirdLastArgument === '--fk')) {
-            console.log('Period choices suggestions should be shown');
-
-            // User input for filtering, removing quotes for comparison
-            const userInputForFiltering = lastArgument.replace(/['"]/g, "").toLowerCase(); // Remove quotes
-
-            const filteredPeriods = periodChoices.filter(choice => {
-                const strippedChoice = choice.replace(/['"]/g, "").toLowerCase(); // Remove quotes from period choices
-                return strippedChoice.includes(userInputForFiltering); // Compare without quotes
-            });
-
-            filteredPeriods.forEach(choice => {
-                const listItem = document.createElement('li'); // Create a list item for each period choice
-                listItem.textContent = choice; // Set the text to the choice
-                listItem.addEventListener('click', () => {
-                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${choice}`; // Replace the last part with the selected choice
-                    document.getElementById('commandInput').value = newInput; 
-                    suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
-                });
-                suggestionsList.appendChild(listItem); // Append the item to the suggestions list
-            });
-            suggestionsList.style.display = 'block'; // Show the suggestions list for period choices
-            console.log('Filtered period choices shown:', filteredPeriods);
-        }
-
-        // Check for recognized flags (short form) and dynamically filter them
-        else if (currentOptions[lastArgument] || 
-                   Object.values(currentOptions).some(opt => opt.short === lastArgument)) {
-            const recognizedFlag = currentOptions[lastArgument] || 
-                Object.values(currentOptions).find(opt => opt.short === lastArgument);
-            if (recognizedFlag) {
-                const choices = recognizedFlag.choices || [];
-                const filteredChoices = choices.filter(choice => choice.toLowerCase().includes(lastArgument.toLowerCase()));
-                
-                filteredChoices.forEach(choice => {
-                    const listItem = document.createElement('li'); // Create a list item for each choice
-                    listItem.textContent = choice; // Set the text to the choice
-                    listItem.addEventListener('click', () => {
-                        const newInput = `${inputParts.slice(0, -1).join(' ')} ${choice}`; // Replace the last part with the selected choice
-                        document.getElementById('commandInput').value = newInput; 
-                        suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
-                    });
-                    suggestionsList.appendChild(listItem); // Append the item to the suggestions list
-                });
-                suggestionsList.style.display = 'block'; // Show the suggestions list
-                console.log('Filtered flag choices shown:', filteredChoices);
+            // Choose the relevant choices based on the third last argument
+            let relevantChoices;
+            switch (thirdLastArgument) {
+                case 'language':
+                    relevantChoices = languageChoices;
+                    break;
+                case 'material':
+                    relevantChoices = materialChoices;
+                    break;
+                case 'provenience':
+                    relevantChoices = provenienceChoices;
+                    break;
+                case 'period':
+                    relevantChoices = periodChoices;
+                    break;
+                case 'genre':
+                    relevantChoices = genreChoices;
+                    break;
+                default:
+                    relevantChoices = [];
             }
+
+            const filteredChoices = relevantChoices.filter(choice => {
+                const strippedChoice = choice.replace(/['"]/g, "").toLowerCase(); // Remove quotes from choices
+                return strippedChoice.includes(userInputForFiltering); // Compare without quotes
+            });
+
+            filteredChoices.forEach(choice => {
+                const listItem = document.createElement('li'); 
+                listItem.textContent = choice; 
+                listItem.addEventListener('click', () => {
+                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${choice}`; 
+                    document.getElementById('commandInput').value = newInput; 
+                    suggestionsList.style.display = 'none'; 
+                });
+                suggestionsList.appendChild(listItem); 
+            });
+
+            suggestionsList.style.display = 'block'; 
+            console.log('Filtered choices shown:', filteredChoices);
         }
     } else {
         console.log('Unrecognized command:', command);
