@@ -134,6 +134,14 @@
             font-size: 14px; /* Smaller font size for Credits button */
             margin: 10px 0; /* Optional: Add margin to position it away from the buttons */
         }
+        .command-list {
+            background-color: #f9f9f9; /* Light gray background */
+            padding: 10px; /* Padding for better spacing */
+            border: 1px solid #ccc; /* Optional border */
+            border-radius: 4px; /* Slightly rounded corners */
+            white-space: pre-wrap; /* Preserve whitespace */
+            overflow-wrap: break-word; /* Allow long lines to break */
+        }
     </style>
 </head>
 <body>
@@ -159,16 +167,60 @@
             <h2>Help</h2>
             <p>Use the CDLI API Client by entering commands in the input box.</p>
             <h3>Commands:</h3>
-            <ul>
-                <li><strong>export</strong>: Export catalog and text data</li>
-                <li><strong>search</strong>: Search the catalog</li>
-            </ul>
+            <pre class="command-list">
+export - Export catalog and text data
+search - Search artifacts in the catalog
+            </pre>
             <h3>Options:</h3>
-            <ul>
-                <li><strong>--host</strong>: Specify the host URL</li>
-                <li><strong>--format</strong>: Specify the output format (ndjson, csv, etc.)</li>
-                <li><strong>--output-file</strong>: Specify an output file</li>
-            </ul>
+            <pre class="command-list">
+--version          Show version number                  [boolean]
+--host, -h         Host URL to use for API calls        [string] [default: "https://cdli.mpiwg-berlin.mpg.de/"]
+--format, -f       File format                          [choices: "ndjson", "csv", "tsv", "ntriples", "bibtex", "atf"]
+--output-file, -o  Output file (outputs to stdout by default)
+--help             Show help                            [boolean]
+--entities, -e     Which types of entities to fetch     [array]
+                                                        [choices: "archives", "artifacts", "artifactsExternalResources", "artifactsMaterials", "collections", "dates", "dynasties", "genres", "inscriptions", "languages", "materials", "materialAspects", "materialColors", "periods", "proveniences", "publications", "regions", "rulers"]
+            </pre>
+            <h3>Export:</h3>
+            <p>Export catalog and text data</p>
+            <pre class="command-list">
+Options:
+--version          Show version number                   [boolean]
+--host, -h         Host URL to use for API calls         [string] [default: "https://cdli.mpiwg-berlin.mpg.de/"]
+--format, -f       File format                           [choices: "ndjson", "csv", "tsv", "ntriples", "bibtex", "atf"]
+--output-file, -o  Output file (outputs to stdout by default)
+--help             Show help                             [boolean]
+--entities, -e     Which types of entities to fetch      [array]
+                                                         [choices: "archives", "artifacts", "artifactsExternalResources", "artifactsMaterials", "collections", "dates", "dynasties", "genres", "inscriptions", "languages", "materials", "materialAspects", "materialColors", "periods", "proveniences", "publications", "regions", "rulers"]
+            </pre>
+            <h3>Search:</h3>
+            <p>Search artifacts in the catalog</p>
+            <pre class="command-list">
+Simple search:
+-q, --query                Search query                   [array]
+    --queryCategory, --qc  Search category                [array]
+                                                          [choices: "keyword", "publication", "collection", "provenience", "period", "transliteration", "translation", "id"]
+    --queryOperator, --qo  Search operator                [array]
+                                                          [choices: "AND", "OR"]
+Advanced search:
+    --advancedField, --af  Search field                   [array]
+    --advancedQuery, --aq  Search query                   [array]
+Filter:
+    --filterField, --fk  Filter by field                  [array]
+    --filterValue, --fv  Filter by value                  [array]
+Options:
+    --version      Show version number                    [boolean]
+-h, --host         Host URL to use for API calls          [string] [default: "https://cdli.mpiwg-berlin.mpg.de/"]
+-f, --format       File format                            [choices: "ndjson", "csv", "tsv", "ntriples", "bibtex", "atf"]
+-o, --output-file  Output file (outputs to stdout by default)
+    --help         Show help                              [boolean]
+            </pre>
+            <h3>Examples:</h3>
+            <pre class="command-list">
+search --filterField period --filterValue "Old Assyrian (ca. 1950-1850 BC)"  --format csv --output-file OA_texts.cv
+
+search --fk period --fv "Old Assyrian (ca. 1950-1850 BC)"  -f csv -o OA_texts.cv
+            </pre>
         </div>
     </div>
 
