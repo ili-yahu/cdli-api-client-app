@@ -1,3 +1,11 @@
+// Fetch the desktop path when the app starts
+window.api.getDesktopPath().then((desktopPath) => {
+    console.log('Desktop Path:', desktopPath);
+    // You can use the desktopPath variable as needed
+}).catch((error) => {
+    console.error('Failed to get desktop path:', error);
+});
+
 // Store the selected folder path globally
 let outputFolderPath = '';
 
@@ -194,20 +202,28 @@ window.addEventListener('click', (event) => {
     }
 });
 
-// Run button functionality
+// Handle the Run button click
 document.getElementById('runButton').addEventListener('click', async () => {
     const command = document.getElementById('commandInput').value;
     const outputElement = document.getElementById('output');
+    
+    // Check if outputFolder is set, if not use desktop path
+    let outputFolder = outputFolderPath; // This should be defined somewhere in your code
+    if (!outputFolder) {
+        outputFolder = await window.api.getDesktopPath(); // Fetch the desktop path if no folder is set
+    }
 
     // Execute the command with the selected output folder
-    const result = await window.api.executeCommand(command, outputFolderPath);
+    const result = await window.api.executeCommand(command, outputFolder);
     outputElement.textContent = result;
 });
 
-// Clear button functionality
-document.getElementById('clearButton').addEventListener('click', () => {
-    document.getElementById('commandInput').value = ''; // Clear the input box
-    document.getElementById('output').textContent = ''; // Optionally clear output
+// Handle the folder selection button click
+document.getElementById('selectFolderButton').addEventListener('click', async () => {
+    outputFolderPath = await window.api.selectOutputFolder(); // Call the exposed function to select a folder
+    if (outputFolderPath) {
+        document.getElementById('commandInput').value += ` --output-folder="${outputFolderPath}"`; // Optionally update the command input
+    }
 });
 
 // Handle Enter key press
@@ -218,39 +234,34 @@ document.getElementById('commandInput').addEventListener('keydown', (event) => {
     }
 });
 
+// Clear button functionality
+document.getElementById('clearButton').addEventListener('click', () => {
+    document.getElementById('commandInput').value = ''; // Clear the input box
+    document.getElementById('output').textContent = ''; // Optionally clear output
+});
+
 // Help button functionality
 document.getElementById('helpButton').addEventListener('click', () => {
-    document.getElementById('helpModal').style.display = 'block';
+    document.getElementById('helpModal').style.display = 'block'; // Display help modal
+});
+
+// Close help modal when clicking outside the content
+window.addEventListener('click', (event) => {
+    const helpModal = document.getElementById('helpModal');
+    if (event.target === helpModal) {
+        helpModal.style.display = 'none';
+    }
 });
 
 // Credits button functionality
 document.getElementById('creditsButton').addEventListener('click', () => {
-    document.getElementById('creditsModal').style.display = 'block';
+    document.getElementById('creditsModal').style.display = 'block'; // Display credits modal
 });
 
-// Close modal functionality
-document.querySelectorAll('.close').forEach(closeButton => {
-    closeButton.addEventListener('click', () => {
-        closeButton.parentElement.parentElement.style.display = 'none'; // Close the respective modal
-    });
-});
-
-// Close modal when clicking outside of modal content
+// Close credits modal when clicking outside the content
 window.addEventListener('click', (event) => {
-    const helpModal = document.getElementById('helpModal');
     const creditsModal = document.getElementById('creditsModal');
-    if (event.target === helpModal) {
-        helpModal.style.display = 'none';
-    }
     if (event.target === creditsModal) {
         creditsModal.style.display = 'none';
-    }
-});
-
-// Select output folder functionality
-document.getElementById('selectFolderButton').addEventListener('click', async () => {
-    outputFolderPath = await window.api.selectOutputFolder(); // Call the exposed function
-    if (outputFolderPath) {
-        document.getElementById('commandInput').value += ` --output-folder="${outputFolderPath}"`; // Optionally update the command input
     }
 });
