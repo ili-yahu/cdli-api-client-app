@@ -55,6 +55,9 @@ const provenienceChoices = ["\"Abdju (mod. Abydos)\"", "\"Adab (mod. Bismaya)\""
 // Genre Choices Array (strings)
 const genreChoices = ["\"Administrative\"", "\"Administrative > Account\"", "\"Administrative > Label or tag\"", "\"Administrative > List or inventory\"", "\"Administrative > Receipt\"", "\"Administrative > Seals and sealings\"", "\"Legal\"", "\"Legal > Business / Contracts\"", "\"Legal > Business / Contracts > Lease Contracts\"", "\"Legal > Business / Contracts > Loan Contracts\"", "\"Legal > Business / Contracts > Purchase and sale contracts\"", "\"Legal > Family > Adoption Documents\"", "\"Legal > Family > Divorce Documents\"", "\"Legal > Family > Dowries and other gifts\"", "\"Legal > Family > Inheritance Documents\"", "\"Legal > Family > Marriage Documents\"", "\"Legal > Judicial\"", "\"Legal > Judicial > Oaths\"", "\"Legal > Judicial > Sworn Testimonies\"", "\"Legal > Judicial > Verdicts\"", "\"Letter\"", "\"Lexical\"", "\"Lexical > Acrographic Word List\"", "\"Lexical > Sign exercise\"", "\"Lexical > Sign list\"", "\"Lexical > Thematic word list\"", "\"Lexical > Vocabularies\"", "\"Literary\"", "\"Literary > Composition with historical background\"", "\"Literary > Literary letter and letter-prayer\"", "\"Literary > Ritual and liturgical\"", "\"Literary > Ritual and liturgical > Canonical lamentation\"", "\"Literary > Ritual and liturgical > Incantation\"", "\"Literary > Ritual and liturgical > Prayer\"", "\"Literary > Ritual and liturgical > Ritual\"", "\"Literary > Wisdom or proverb\"", "\"Official or display\"", "\"Official or display > Annals and Chronicle\"", "\"Official or display > Law Collection\"", "\"Official or display > Royal Inscription\"", "\"Official or display > Treaty\"", "\"Official or display > Votive\"", "\"Other\"", "\"Scholarly or scientific\"", "\"Scholarly or scientific > Astral sciences\"", "\"Scholarly or scientific > Astral sciences > Astrology\"", "\"Scholarly or scientific > Astral sciences > Omens\"", "\"Scholarly or scientific > Commentary\"", "\"Scholarly or scientific > Divination\"", "\"Scholarly or scientific > Mathematical\"", "\"Scholarly or scientific > Medical\"", "\"Scholarly or scientific > Plan or Drawing\"", "\"Scholarly or scientific > Recipe or Instruction\"", "\"no value\""];
 
+// Language Choices Array (strings)
+const languageChoices = ["\"Akkadian\"", "\"Akkadian > Middle Assyrian\"", "\"Akkadian > Middle Babylonian\"", "\"Akkadian > Old Assyrian\"", "\"Akkadian > Old Babylonian\"", "\"Akkadian > Standard Babylonian\"", "\"Arabic\"", "\"Aramaic\"", "\"Eblaite\"", "\"Egyptian\"", "\"Elamite\"", "\"Greek\"", "\"Hattic\"", "\"Hebrew\"", "\"Hittite\"", "\"Hurrian\"", "\"Luwian\"", "\"Mandaic\"", "\"Persian\"", "\"Phoenician\"", "\"Pseudo language\"", "\"Qatabanian\"", "\"Sabaean\"", "\"Sumerian\"", "\"Sumerian > Emesal\"", "\"Sumerian > Syllabic\"", "\"Syriac\"", "\"Ugaritic\"", "\"Urartian\"", "\"no linguistic content\"", "\"uncertain\"", "\"undetermined\"", "\"no value\""];
+
 // Capture user input and filter suggestions
 document.getElementById('commandInput').addEventListener('input', (event) => {
     const input = event.target.value.trim(); // Get the current input value
@@ -99,6 +102,47 @@ document.getElementById('commandInput').addEventListener('input', (event) => {
                 console.log('Flag suggestions shown:', filteredOptions);
             }
         } 
+        // Suggest filter value options when --filterField is used
+        if ((secondLastArgument === '--filterField' || secondLastArgument === '--fk') && lastArgument === 'language') {
+            const filterValueOptions = ['--fv', '--filterValue'];
+
+            // Suggest filter value options
+            filterValueOptions.forEach(option => {
+                const listItem = document.createElement('li'); // Create a list item for each filter value option
+                listItem.textContent = option; // Set the text to the option
+                listItem.addEventListener('click', () => {
+                    const newInput = `${inputParts.slice(0, -1).join(' ')} ${option}`; // Replace the last part with the selected option
+                    document.getElementById('commandInput').value = newInput; 
+                    suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
+                });
+                suggestionsList.appendChild(listItem); // Append the item to the suggestions list
+            });
+            suggestionsList.style.display = 'block'; // Show the suggestions list for filter value options
+            console.log('Filter value suggestions shown:', filterValueOptions);
+        } 
+        // Suggest language choices when the user types --fv after --filterField language
+         else if ((secondLastArgument === '--fv' || secondLastArgument === '--filterValue') && 
+         thirdLastArgument === 'language') {
+             // User input for filtering, removing quotes for comparison
+             const userInputForFiltering = lastArgument.replace(/['"]/g, "").toLowerCase(); // Remove quotes
+             const filteredLanguages = languageChoices.filter(choice => {
+                 const strippedChoice = choice.replace(/['"]/g, "").toLowerCase(); // Remove quotes from language choices
+                 return strippedChoice.includes(userInputForFiltering); // Compare without quotes
+             });
+ 
+             filteredLanguages.forEach(choice => {
+                 const listItem = document.createElement('li'); // Create a list item for each language choice
+                 listItem.textContent = choice; // Set the text to the choice
+                 listItem.addEventListener('click', () => {
+                     const newInput = `${inputParts.slice(0, -1).join(' ')} ${choice}`; // Replace the last part with the selected choice
+                     document.getElementById('commandInput').value = newInput; 
+                     suggestionsList.style.display = 'none'; // Hide the suggestions list after selection
+                 });
+                 suggestionsList.appendChild(listItem); // Append the item to the suggestions list
+             });
+             suggestionsList.style.display = 'block'; // Show the suggestions list for language choices
+             console.log('Filtered language choices shown:', filteredLanguages);
+         }
         
         // Suggest filter value options when --filterField period is used
         else if ((secondLastArgument === '--filterField' || secondLastArgument === '--fk') && lastArgument === 'period') {
