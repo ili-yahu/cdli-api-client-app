@@ -41,12 +41,27 @@
             text-decoration: none;
             cursor: pointer;
         }
-        #creditsButton {
-            font-size: 12px; /* Smaller text for the credits button */
-            padding: 5px; /* Smaller padding */
-            position: absolute; /* Position it at the bottom left */
-            bottom: 20px;
-            left: 20px;
+        .title-rectangle {
+            background-color: #1661AB; /* Your chosen blue */
+            height: 70px; /* Adjust height as needed */
+            display: flex; /* Use flexbox for centering */
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
+            text-align: center; /* Center text */
+        }
+        .title {
+            color: white; /* Ensure text color is white */
+            font-weight: 600; /* Optional: Make text bold */
+            text-transform: uppercase; /* Make text uppercase */
+        }
+        #commandInput {
+            width: 100%; /* Match the container's width */
+            padding: 15px; /* Add some padding inside the input box */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box; /* Ensure padding doesn't affect the overall width */
+            margin-top: 10px; /* Space between input and top */
+            margin-bottom: 10px; /* Space between input and buttons */
         }
         #suggestions {
             max-height: 200px; /* Set a maximum height for the suggestions list */
@@ -85,19 +100,58 @@
         #suggestions li:hover {
             background-color: #f0f0f0; /* Highlight item on hover */
         }
+        .button-container {
+            display: flex; /* Use flexbox for layout */
+            justify-content: space-between; /* Space between left buttons and select folder button */
+            align-items: center; /* Align buttons vertically centered */
+            margin: 0; /* No margin around the container */
+        }
+        .left-buttons {
+            display: flex; /* Use flexbox for left buttons */
+        }
+        #selectFolderButton {
+            margin-left: auto; /* Push this button to the right of the flex container */
+            margin-right: 0; /* Remove margin for last button */
+        }
+        button {
+            background-color: #1661AB; /* Updated button color */
+            color: white; /* Button text color */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            padding: 10px 20px; /* Button padding */
+            cursor: pointer; /* Pointer cursor on hover */
+        }
+        button:hover {
+            background-color: #3B8DCE; /* Darker shade on hover */
+        }
+        #creditsButton {
+            font-size: 12px; /* Smaller text for the credits button */
+            padding: 5px; /* Smaller padding */
+            position: absolute; /* Position it at the bottom left */
+            bottom: 20px;
+            left: 20px;
+            padding: 5px 10px; /* Smaller padding for Credits button */
+            font-size: 14px; /* Smaller font size for Credits button */
+            margin: 10px 0; /* Optional: Add margin to position it away from the buttons */
+        }
     </style>
 </head>
 <body>
-    <h1>CDLI API Client</h1>
+    <div class="title-rectangle">
+        <h1 class="title">CDLI API CLIENT</h1>
+    </div>    
     <input type="text" id="commandInput" placeholder="Enter your command here">
     <ul id="suggestions" style="display: none;"></ul>
-    <button id="runButton">Run</button>
-    <button id="clearButton">Clear</button>
-    <button id="helpButton">?</button> 
-    <button id="creditsButton">Credits</button>
-    <button id="selectFolderButton">Select Output Folder</button>
+    <div class="button-container">
+        <div class="left-buttons">
+            <button id="runButton">Run</button>
+            <button id="clearButton">Clear</button>
+            <button id="helpButton">Help</button>
+        </div>
+        <button id="selectFolderButton">Select Output Folder</button> <!-- This button will align to the right -->
+    </div>
+    <button id="creditsButton">Credits</button> <!-- Credits button remains separate -->
     <pre id="output"></pre>
-
     <!-- Help Modal Structure -->
     <div id="helpModal" class="modal">
         <div class="modal-content">
