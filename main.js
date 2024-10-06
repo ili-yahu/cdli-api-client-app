@@ -7,12 +7,21 @@ const createWindow = () => {
     const win = new BrowserWindow({
         width: 800,
         height: 600,
+        icon: path.join(__dirname, 'resources/cdli-api-logo.ico'), // Windows
+        // If you are on macOS
+        mac: {
+            icon: path.join(__dirname, 'resources/cdli-api-logo.icns') // macOS
+        },
+        // If you are on Linux
+        linux: {
+            icon: path.join(__dirname, 'resources/cdli-api-logo.png') // Linux
+        },
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
             enableRemoteModule: false,
         }
-    });
+    });    
 
     win.loadFile('index.html');
 };
