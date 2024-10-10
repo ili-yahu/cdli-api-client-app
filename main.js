@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
-const path = require('node:path');
-const { exec } = require('child_process');
-const os = require('os'); // Import the os module
+const path = require('path');
+const { exec } = require('child_process'); // Import exec from child_process
+const os = require('os');
 
 // Function to create the main window
 const createWindow = () => {
@@ -25,10 +25,17 @@ ipcMain.handle('get-desktop-path', async () => {
     return desktopPath; // Return the path
 });
 
+// Get the correct path for the cli.js file based on the app environment
+const getCliPath = () => {
+    // Use `app.getAppPath()` to dynamically get the correct path after packaging
+    return path.join(app.getAppPath(), 'node_modules', 'cdli-api-client', 'cli.js');
+};
+
 // Handle the command execution
 ipcMain.handle('execute-command', async (event, command, outputFolder) => {
     return new Promise((resolve, reject) => {
-        const fullCommand = `cdli ${command}`; // Construct the full command
+        const cliPath = getCliPath();  // Get the correct cli path
+        const fullCommand = `node "${cliPath}" ${command}`;
         exec(fullCommand, { cwd: outputFolder }, (error, stdout, stderr) => {
             if (error) {
                 reject(`Error: ${stderr || error.message}`);

@@ -206,11 +206,12 @@ window.addEventListener('click', (event) => {
 document.getElementById('runButton').addEventListener('click', async () => {
     const command = document.getElementById('commandInput').value;
     const outputElement = document.getElementById('output');
-    
-    // Check if outputFolder is set, if not use desktop path
-    let outputFolder = outputFolderPath; // This should be defined somewhere in your code
+
+    console.log('Command to execute:', command); // Log the command being executed
+
+    let outputFolder = outputFolderPath; 
     if (!outputFolder) {
-        outputFolder = await window.api.getDesktopPath(); // Fetch the desktop path if no folder is set
+        outputFolder = await window.api.getDesktopPath();
     }
 
     // Execute the command with the selected output folder

@@ -3,8 +3,19 @@
   "version": "1.0.0",
   "description": "An app to use the CDLI API client",
   "main": "main.js",
+  "bin": {
+    "cdli": "./node_modules/cdli-api-client/cli.js"
+  },
+  "files": [
+    "main.js",
+    "index.html",
+    "preload.js",
+    "renderer.js",
+    "resources/**",
+    "node_modules/cdli-api-client/**"
+  ],
   "scripts": {
-    "start": "electron .",
+    "start": "electron-forge start",
     "startf": "electron-forge start",
     "test": "echo \"Error: no test specified\" && exit 1",
     "package": "electron-forge package",
@@ -39,6 +50,7 @@
   },
   "build": {
     "appId": "com.cdli-api.id",
+    "asar": false,
     "mac": {
       "icon": "resources/cdli-api-logo.icns"
     },
