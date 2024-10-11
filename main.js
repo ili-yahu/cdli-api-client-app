@@ -35,7 +35,7 @@ const getCliPath = () => {
 ipcMain.handle('execute-command', async (event, command, outputFolder) => {
     return new Promise((resolve, reject) => {
         const cliPath = getCliPath();  // Get the correct cli path
-        const fullCommand = `node "${cliPath}" ${command}`;
+        const fullCommand = `cdli ${command}`;
         exec(fullCommand, { cwd: outputFolder }, (error, stdout, stderr) => {
             if (error) {
                 reject(`Error: ${stderr || error.message}`);
