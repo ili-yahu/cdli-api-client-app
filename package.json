@@ -3,6 +3,17 @@
   "version": "1.0.0",
   "description": "An app to use the CDLI API client",
   "author": "Ilī-Yahu",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "none"
+  },
+  "keywords": [
+    "cdli",
+    "api",
+    "client",
+    "cuneiform"
+  ],
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
