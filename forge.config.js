@@ -9,7 +9,12 @@ module.exports = {
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        name: "cdli-api-client-app",
+        noMsi: true,
+        setupExe: "cdli-api-client-setup.exe",
+        setupShortcut: true,
+      },
     },
     {
       name: '@electron-forge/maker-zip',
@@ -29,8 +34,6 @@ module.exports = {
       name: '@electron-forge/plugin-auto-unpack-natives',
       config: {},
     },
-    // Fuses are used to enable/disable various Electron functionality
-    // at package time, before code signing the application
     new FusesPlugin({
       version: FuseVersion.V1,
       [FuseV1Options.RunAsNode]: false,

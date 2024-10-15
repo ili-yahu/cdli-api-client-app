@@ -2,63 +2,70 @@
   "name": "cdli-api-client-app",
   "version": "1.0.0",
   "description": "An app to use the CDLI API client",
+  "author": "Ilī-Yahu",
   "main": "main.js",
-  "bin": {
-    "cdli": "./node_modules/cdli-api-client/cli.js"
-  },
-  "files": [
-    "main.js",
-    "index.html",
-    "preload.js",
-    "renderer.js",
-    "resources/**",
-    "node_modules/cdli-api-client/**"
-  ],
   "scripts": {
     "start": "electron-forge start",
-    "startf": "electron-forge start",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "package": "electron-forge package",
-    "make": "electron-forge make"
+    "package": "electron-builder --dir",
+    "make": "electron-builder"
   },
-  "repository": {
-    "type": "git",
-    "url": "none"
+  "build": {
+    "appId": "com.cdli.api.id",
+    "asar": true,
+    "asarUnpack": [
+      "**/*.node",
+      "**/*.so"
+    ],
+    "mac": {
+      "icon": "resources/cdli-api-client-app-logo.icns"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64", "ia32"]
+        }
+      ],
+      "icon": "resources/cdli-api-client-app-logo.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "CDLI API Client App",
+      "installerIcon": "resources/cdli-api-client-app-logo.ico",
+      "uninstallerIcon": "resources/cdli-api-client-app-logo.ico"
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "rpm"
+      ],
+      "icon": "resources/cdli-api-client-app-logo.png",
+      "category": "Utility"
+    },
+    "files": [
+      "main.js",
+      "index.html",
+      "preload.js",
+      "renderer.js",
+      "resources/**",
+      "node_modules/cdli-api-client/**"
+    ]
   },
-  "keywords": [
-    "cdli",
-    "api",
-    "client",
-    "cuneiform"
-  ],
-  "author": "Ilī-Yahu",
-  "license": "UNLICENSED",
-  "devDependencies": {
-    "@electron-forge/cli": "^7.5.0",
-    "@electron-forge/maker-deb": "^7.5.0",
-    "@electron-forge/maker-rpm": "^7.5.0",
-    "@electron-forge/maker-squirrel": "^7.5.0",
-    "@electron-forge/maker-zip": "^7.5.0",
-    "@electron-forge/plugin-auto-unpack-natives": "^7.5.0",
-    "@electron-forge/plugin-fuses": "^7.5.0",
-    "@electron/fuses": "^1.8.0",
-    "electron": "^32.1.2"
+  "bin": {
+    "cdli": "./node_modules/cdli-api-client/cli.js"
   },
   "dependencies": {
     "cdli-api-client": "github:cdli-gh/framework-api-client",
     "electron-squirrel-startup": "^1.0.1"
   },
-  "build": {
-    "appId": "com.cdli-api.id",
-    "asar": false,
-    "mac": {
-      "icon": "resources/cdli-api-logo.icns"
-    },
-    "win": {
-      "icon": "resources/cdli-api-logo.ico"
-    },
-    "linux": {
-      "icon": "resources/cdli-api-logo.png"
-    }
+  "devDependencies": {
+    "electron-builder": "^23.6.0",
+    "@electron-forge/cli": "^7.5.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.5.0",
+    "electron": "^32.1.2"
   }
 }
