@@ -209,15 +209,36 @@ document.getElementById('runButton').addEventListener('click', async () => {
 
     console.log('Command to execute:', command); // Log the command being executed
 
+    // Show the loading spinner before starting the command execution
+    showLoading();
+
     let outputFolder = outputFolderPath; 
     if (!outputFolder) {
         outputFolder = await window.api.getDesktopPath();
     }
 
-    // Execute the command with the selected output folder
-    const result = await window.api.executeCommand(command, outputFolder);
-    outputElement.textContent = result;
+    try {
+        // Execute the command with the selected output folder
+        const result = await window.api.executeCommand(command, outputFolder);
+        outputElement.textContent = result;
+    } catch (error) {
+        console.error('Error executing command:', error);
+        outputElement.textContent = 'Error occurred: ' + error.message;
+    } finally {
+        // Hide the loading spinner after command execution
+        hideLoading();
+    }
 });
+
+// Function to show the loading spinner
+function showLoading() {
+    document.getElementById('loadingSpinner').style.display = 'block';
+}
+
+// Function to hide the loading spinner
+function hideLoading() {
+    document.getElementById('loadingSpinner').style.display = 'none';
+}
 
 // Handle the folder selection button click
 document.getElementById('selectFolderButton').addEventListener('click', async () => {
@@ -266,3 +287,22 @@ window.addEventListener('click', (event) => {
         creditsModal.style.display = 'none';
     }
 });
+
+// Handle dark mode toggle
+const darkModeToggle = document.getElementById('darkModeToggle');
+const body = document.body;
+
+// Function to toggle dark mode
+function toggleDarkMode() {
+    body.classList.toggle('dark-mode');
+
+    // Optional: Change button text or icon based on the mode
+    if (body.classList.contains('dark-mode')) {
+        darkModeToggle.innerHTML = '🌞'; // Change to sun icon when dark mode is active
+    } else {
+        darkModeToggle.innerHTML = '🌙'; // Change back to moon icon when dark mode is inactive
+    }
+}
+
+// Event listener for the dark mode toggle button
+darkModeToggle.addEventListener('click', toggleDarkMode);
