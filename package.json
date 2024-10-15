@@ -60,6 +60,7 @@
     "files": [
       "main.js",
       "index.html",
+      "styles.css",
       "preload.js",
       "renderer.js",
       "resources/**",
