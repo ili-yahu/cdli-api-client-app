@@ -1,0 +1,43 @@
+version: 'pre-release'
+
+# Define jobs for each OS
+jobs:
+  - name: Windows
+    os: Visual Studio 2022
+    configuration: Release
+    platform: x64
+    skip_commits:
+      files:
+        - '*.md'
+
+  - name: macOS
+    os: macos-12
+    configuration: Release
+
+  - name: Linux
+    os: Ubuntu
+    configuration: Release
+
+# Install dependencies
+init:
+  - ps: Install-Product node $env:nodejs_version
+  - npm install
+
+# Build process for Electron
+build_script:
+  - echo "Building for Electron..."
+  - npm run make
+
+# Define artifacts (built files) to be stored
+artifacts:
+  - path: './dist/*.exe'
+    name: Windows
+  - path: './dist/*.dmg'
+    name: macOS
+  - path: './dist/*.AppImage'
+    name: Linux
+
+# Environment variables
+environment:
+  nodejs_version: '16.13.1'
+  electron_version: '16.0.6'

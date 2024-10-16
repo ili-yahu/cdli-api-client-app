@@ -28,13 +28,21 @@
       "**/*.so"
     ],
     "mac": {
+      "category": "public.app-category.utilities",
+      "target": [
+        "dmg",
+        "zip"
+      ],
       "icon": "resources/cdli-api-client-app-logo.icns"
     },
     "win": {
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64", "ia32"]
+          "arch": [
+            "x64",
+            "ia32"
+          ]
         }
       ],
       "icon": "resources/cdli-api-client-app-logo.ico"
@@ -52,10 +60,14 @@
     "linux": {
       "target": [
         "deb",
-        "rpm"
+        "rpm",
+        "AppImage"
       ],
       "icon": "resources/cdli-api-client-app-logo.png",
       "category": "Utility"
+    },
+    "docker": {
+        "useDocker": true
     },
     "files": [
       "main.js",
@@ -71,13 +83,12 @@
     "cdli": "./node_modules/cdli-api-client/cli.js"
   },
   "dependencies": {
-    "cdli-api-client": "github:cdli-gh/framework-api-client",
-    "electron-squirrel-startup": "^1.0.1"
+    "cdli-api-client": "github:cdli-gh/framework-api-client"
   },
   "devDependencies": {
-    "electron-builder": "^23.6.0",
     "@electron-forge/cli": "^7.5.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.5.0",
-    "electron": "^32.1.2"
+    "electron": "^32.1.2",
+    "electron-builder": "^25.1.8"
   }
 }
