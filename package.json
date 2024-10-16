@@ -1,9 +1,9 @@
 {
   "name": "cdli-api-client-app",
-  "version": "1.0.0",
+  "version": "1.0.0-pre-release",
   "description": "An app to use the CDLI API client",
   "author": "Ilī-Yahu",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "none"
@@ -65,9 +65,6 @@
       ],
       "icon": "resources/cdli-api-client-app-logo.png",
       "category": "Utility"
-    },
-    "docker": {
-        "useDocker": true
     },
     "files": [
       "main.js",
