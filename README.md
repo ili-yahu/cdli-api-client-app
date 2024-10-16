@@ -2,7 +2,7 @@
 aliases: CDLI API Client application
 license: MIT
 date: 2024-10-16
-version: Pre-release 1_0
+version: Pre-release 1.2
 author: Ilī-Yahu
 contact: ili-yahu@pm.me
 ---
