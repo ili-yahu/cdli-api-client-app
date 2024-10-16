@@ -1,25 +1,22 @@
 version: 'pre-release'
 
-# Define jobs for each OS
-jobs:
-  - name: Windows
-    os: Visual Studio 2022
-    configuration: Release
-    platform: x64
-    skip_commits:
-      files:
-        - '*.md'
-
-  - name: macOS
-    os: macos-12
-    configuration: Release
-
-  - name: Linux
-    os: Ubuntu
-    configuration: Release
+# Define a matrix of configurations for different OS environments
+matrix:
+  fast_finish: true
+  include:
+    - os: Windows
+      image: Visual Studio 2022
+      configuration: Release
+      platform: x64
+    - os: macOS
+      image: macos-12
+      configuration: Release
+    - os: Linux
+      image: Ubuntu
+      configuration: Release
 
 # Install dependencies
-init:
+install:
   - ps: Install-Product node $env:nodejs_version
   - npm install
 
