@@ -1,6 +1,6 @@
 {
   "name": "cdli-api-client-app",
-  "version": "1.0.0-pre-release",
+  "version": "1.2.2-pre-release",
   "description": "An app to use the CDLI API client",
   "author": "Ilī-Yahu",
   "license": "MIT",
@@ -55,7 +55,8 @@
       "createStartMenuShortcut": true,
       "shortcutName": "CDLI API Client App",
       "installerIcon": "resources/cdli-api-client-app-logo.ico",
-      "uninstallerIcon": "resources/cdli-api-client-app-logo.ico"
+      "uninstallerIcon": "resources/cdli-api-client-app-logo.ico",
+      "deleteAppDataOnUninstall": true
     },
     "linux": {
       "target": [
