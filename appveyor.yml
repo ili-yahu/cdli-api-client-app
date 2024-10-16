@@ -3,17 +3,49 @@ version: 'pre-release'
 # Define a matrix of configurations for different OS environments
 matrix:
   fast_finish: true
-  include:
-    - os: Windows
-      image: Visual Studio 2022
-      configuration: Release
-      platform: x64
+  # Define the jobs here for different platforms
+  jobs:
+    - environment:
+        nodejs_version: '16.13.1'
+        electron_version: '16.0.6'
+      install:
+        - ps: Install-Product node $env:nodejs_version
+        - npm install
+      build_script:
+        - echo "Building for Windows..."
+        - npm run make
+      artifacts:
+        - path: './dist/*.exe'
+          name: Windows
+
     - os: macOS
       image: macos-12
-      configuration: Release
-    - os: Linux
-      image: Ubuntu
-      configuration: Release
+      environment:
+        nodejs_version: '16.13.1'
+        electron_version: '16.0.6'
+      install:
+        - ps: Install-Product node $env:nodejs_version
+        - npm install
+      build_script:
+        - echo "Building for macOS..."
+        - npm run make
+      artifacts:
+        - path: './dist/*.dmg'
+          name: macOS
+
+    - os: Ubuntu
+      environment:
+        nodejs_version: '16.13.1'
+        electron_version: '16.0.6'
+      install:
+        - ps: Install-Product node $env:nodejs_version
+        - npm install
+      build_script:
+        - echo "Building for Linux..."
+        - npm run make
+      artifacts:
+        - path: './dist/*.AppImage'
+          name: Linux
 
 # Install dependencies
 install:
