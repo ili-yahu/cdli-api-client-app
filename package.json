@@ -1,6 +1,6 @@
 {
   "name": "cdli-api-client-app",
-  "version": "1.2.2-pre-release",
+  "version": "1.2.3-pre-release",
   "description": "An app to use the CDLI API client",
   "author": "Ilī-Yahu",
   "license": "MIT",
@@ -16,7 +16,7 @@
   ],
   "main": "main.js",
   "scripts": {
-    "start": "electron-forge start",
+    "start": "electron .",
     "package": "electron-builder --dir",
     "make": "electron-builder"
   },
@@ -84,9 +84,7 @@
     "cdli-api-client": "github:cdli-gh/framework-api-client"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^7.5.0",
-    "@electron-forge/plugin-auto-unpack-natives": "^7.5.0",
-    "electron": "^32.1.2",
+    "electron": "^33.0.1",
     "electron-builder": "^25.1.8"
   }
 }
