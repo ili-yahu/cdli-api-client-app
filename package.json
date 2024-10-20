@@ -1,12 +1,12 @@
 {
   "name": "cdli-api-client-app",
-  "version": "1.2.3-pre-release",
+  "version": "1.2.4-pre-release",
   "description": "An app to use the CDLI API client",
   "author": "Ilī-Yahu",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "none"
+    "url": "https://github.com/ili-yahu/cdli-api-client-app.git"
   },
   "keywords": [
     "cdli",
@@ -18,7 +18,10 @@
   "scripts": {
     "start": "electron .",
     "package": "electron-builder --dir",
-    "make": "electron-builder"
+    "make": "electron-builder",
+    "make-win": "electron-builder --win",
+    "make-mac": "electron-builder --mac",
+    "make-linux": "electron-builder --linux"
   },
   "build": {
     "appId": "com.cdli.api.id",
@@ -30,8 +33,12 @@
     "mac": {
       "category": "public.app-category.utilities",
       "target": [
-        "dmg",
-        "zip"
+        {
+          "target": "dmg",
+          "arch": [
+            "universal"
+          ]
+        }
       ],
       "icon": "resources/cdli-api-client-app-logo.icns"
     },
